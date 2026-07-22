@@ -1,0 +1,79 @@
+# Decisões de arquitetura
+
+Formato: contexto → decisão → alternativas descartadas e por quê. Adicionar uma entrada
+por decisão relevante; não editar entradas antigas, só adicionar novas (ou marcar como
+superada, referenciando a que substituiu).
+
+## Fechadas
+
+### Stack: React + Vite
+
+Contexto: o objetivo deste frontend é expor bem o projeto de portfólio, gastando o mínimo
+de esforço/tempo possível — diferente do backend (`overture`), que é o projeto de
+aprendizado. Desempenho bruto entre as opções avaliadas é irrelevante nesta escala de
+tráfego (portfólio, poucos visitantes simultâneos).
+
+Decisão: React + Vite (SPA simples, sem framework full-stack).
+
+Descartadas:
+
+- **Vanilla JS + Astro** — mais aprendizado de fundamentos e mais alinhado à filosofia
+  "sem mágica" do backend, mas exige escrever manualmente gerência de estado/DOM da UI de
+  chat; não vale o tempo dado que o frontend não é objetivo de aprendizado aqui.
+- **Next.js** — API routes embutidas resolveriam o proxy da key sem função serverless
+  separada, mas é mais framework do que o necessário para uma SPA simples.
+
+### Proxy da API key: função serverless separada
+
+Contexto: a `X-API-Key` da overture-api é única e compartilhada; não pode aparecer no
+bundle do browser.
+
+Decisão: uma função serverless própria deste projeto (Vercel Function ou Cloudflare
+Worker) expõe `POST /api/ask` e `GET /api/repos`, repassando pra overture-api com a
+`X-API-Key` injetada no lado do servidor. Como o browser fala só com essa função (mesma
+origem do frontend), CORS não é um problema.
+
+### Trajectory visível desde a v1
+
+Contexto: o `trajectory` do `/ask` mostra as ferramentas que o agente usou pra responder
+— é o principal diferencial de portfólio.
+
+Decisão: exibir isso já na primeira versão, não como melhoria futura.
+
+### Hosting: Cloudflare Pages + Workers
+
+Contexto: o frontend precisa de hosting estático + uma função serverless (proxy da
+`X-API-Key`), e a decisão de rate limiting depende do que a plataforma oferece nativo.
+
+Decisão: Cloudflare Pages, com a função de proxy como Pages Function (Workers). Motivo
+decisivo: rate limiting binding e KV são nativos e gratuitos — a proteção de custo não
+exige nenhum serviço externo, alinhado ao "simplicidade antes de abstração".
+
+Descartadas:
+
+- **Vercel** — melhor DX, mas rate limiting persistente exigiria Upstash Redis/Vercel KV
+  como dependência externa só pra isso.
+- **Netlify** — mesma limitação da Vercel, sem vantagem compensatória.
+
+Trade-off aceito: DX um pouco menos polida (wrangler) e runtime V8 isolates em vez de
+Node — irrelevante pra um proxy que só faz `fetch`.
+
+### Rate limiting: por IP + teto global diário
+
+Contexto: cada `POST /ask` custa dinheiro real (LLM no backend); página pública sem
+controle de acesso. O risco a mitigar é custo descontrolado, não indisponibilidade.
+
+Decisão: dois níveis na função serverless — limite por IP (ex. 5 req/min via rate
+limiting binding do Workers) + teto global diário de asks (ex. 200/dia, contador em
+Workers KV; estourou → 429 com mensagem amigável). Números exatos ajustáveis na
+implementação. Só o teto global limita o pior caso de gasto em valor absoluto.
+
+Descartadas:
+
+- **Só por IP** — não protege contra abuso distribuído; gasto sem teto.
+- **IP + teto + Turnstile (CAPTCHA)** — máxima proteção, mas atrito e código extras;
+  exagero pra vitrine de baixo tráfego.
+
+## Em aberto (resolver com o usuário antes de codar)
+
+(nenhuma no momento)

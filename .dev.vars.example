@@ -1,0 +1,4 @@
+# Copiar para .dev.vars (gitignored) para desenvolvimento local com `wrangler pages dev`.
+# Em produção: `wrangler pages secret put OVERTURE_API_KEY`.
+# NUNCA usar um prefixo que exponha esta variável ao bundle do cliente (ex. VITE_*).
+OVERTURE_API_KEY=changeme

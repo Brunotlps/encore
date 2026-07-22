@@ -1,0 +1,13 @@
+# Cloudflare Pages — ver docs/decisions.md ("Hosting").
+# Secrets (OVERTURE_API_KEY): `wrangler pages secret put` em produção; `.dev.vars` local.
+name = "encore"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-06-01"
+
+# Criar com `wrangler kv namespace create RATE_LIMIT_KV` e colar o id gerado.
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "TODO-criar-no-deploy"
+
+[vars]
+OVERTURE_API_BASE_URL = "https://overture-prod.fly.dev"
