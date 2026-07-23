@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://encore-c6m.pages.dev/sitemap.xml
