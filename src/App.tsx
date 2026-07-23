@@ -75,33 +75,82 @@ function AboutPage() {
           foco em testes automatizados, segurança e observabilidade. Também contribuo
           para projetos open source, incluindo o Caddy.
         </p>
-        <div className="about-actions">
-          <Link href="/chat" className="primary-link">
-            Conversar sobre os projetos
-          </Link>
-          <div className="about-secondary-actions">
-            <a
-              href="https://github.com/Brunotlps"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
-            <SocialLinks />
-          </div>
+        <div className="profile-actions">
+          <a
+            href="https://github.com/Brunotlps"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+          <SocialLinks />
         </div>
       </div>
 
       <article className="about-encore" aria-labelledby="encore-title">
-        <p className="eyebrow">Como funciona</p>
-        <h2 id="encore-title">Um portfólio que responde.</h2>
-        <p>
-          O Encore é um portfólio interativo: em vez de apenas listar projetos, ele
-          permite conversar sobre o código deles. Você escolhe um repositório e faz
-          perguntas; o Overture, agente de IA que funciona nos bastidores, investiga
-          os arquivos e apresenta tanto a resposta quanto o caminho percorrido para
-          encontrá-la.
+        <header className="encore-intro">
+          <p className="eyebrow">Como funciona</p>
+          <h2 id="encore-title">Um portfólio que responde.</h2>
+          <p>
+            O Encore é um portfólio interativo que transforma meus repositórios em
+            uma experiência de exploração. Em vez de apenas listar projetos, ele
+            permite investigar decisões de arquitetura, implementação, testes e
+            segurança conversando diretamente sobre o código.
+          </p>
+          <p className="encore-highlight">
+            Não é um chat genérico: cada resposta parte do projeto selecionado e vem
+            acompanhada das ferramentas que o agente usou para encontrá-la.
+          </p>
+        </header>
+
+        <ol className="encore-steps" aria-label="Como o Encore funciona">
+          <li>
+            <span aria-hidden="true">01</span>
+            <h3>Escolha um projeto</h3>
+            <p>Conheça a stack, o propósito e sugestões do que explorar.</p>
+          </li>
+          <li>
+            <span aria-hidden="true">02</span>
+            <h3>Pergunte ao código</h3>
+            <p>O agente busca arquivos e trechos relevantes no repositório.</p>
+          </li>
+          <li>
+            <span aria-hidden="true">03</span>
+            <h3>Acompanhe o percurso</h3>
+            <p>Veja as ferramentas consultadas junto da resposta em markdown.</p>
+          </li>
+        </ol>
+
+        <div className="encore-architecture" aria-label="Arquitetura do Encore">
+          <div>
+            <span>Interface</span>
+            <strong>Encore</strong>
+            <p>React, TypeScript, Vite e Cloudflare Pages.</p>
+          </div>
+          <span className="architecture-connector" aria-hidden="true">
+            →
+          </span>
+          <div>
+            <span>Agente</span>
+            <strong>Overture</strong>
+            <p>Python, FastAPI, LangGraph e ferramentas de leitura do código.</p>
+          </div>
+        </div>
+
+        <p className="encore-security">
+          Uma função serverless faz a ponte entre os dois sem expor a chave da API no
+          navegador.
         </p>
+
+        <footer className="encore-action">
+          <div>
+            <p className="eyebrow">Experimente agora</p>
+            <p>Escolha um projeto e faça sua primeira pergunta.</p>
+          </div>
+          <Link href="/chat" className="primary-link">
+            Conversar sobre os projetos
+          </Link>
+        </footer>
       </article>
     </section>
   );

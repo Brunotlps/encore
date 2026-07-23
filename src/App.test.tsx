@@ -32,6 +32,17 @@ describe("App", () => {
 
     expect(screen.getByText(/sou desenvolvedor backend/i)).toBeVisible();
     expect(screen.getByText(/portfólio interativo/i)).toBeVisible();
+    const encore = screen.getByRole("article", {
+      name: "Um portfólio que responde.",
+    });
+    expect(
+      within(encore).getByRole("link", {
+        name: /conversar sobre os projetos/i,
+      }),
+    ).toBeVisible();
+    expect(
+      within(encore).getByRole("list", { name: /como o encore funciona/i }),
+    ).toHaveTextContent(/escolha.*pergunte.*acompanhe/i);
     expect(screen.getByRole("link", { name: /github/i })).toHaveAttribute(
       "href",
       "https://github.com/Brunotlps",
