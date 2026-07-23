@@ -4,10 +4,9 @@ name = "encore"
 pages_build_output_dir = "dist"
 compatibility_date = "2025-06-01"
 
-# Criar com `wrangler kv namespace create RATE_LIMIT_KV` e colar o id gerado.
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "TODO-criar-no-deploy"
+id = "6424048d9b904319964b0bd5414bd413"
 
 [vars]
 OVERTURE_API_BASE_URL = "https://overture-prod.fly.dev"
