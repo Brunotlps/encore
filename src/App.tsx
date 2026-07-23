@@ -4,7 +4,7 @@ import { Chat } from "./components/Chat";
 import { RepoSelector } from "./components/RepoSelector";
 
 export default function App() {
-  const [repos, setRepos] = useState<Repo[]>([]);
+  const [repos, setRepos] = useState<Repo[] | null>(null); // null = carregando
   const [selected, setSelected] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -37,7 +37,13 @@ export default function App() {
         <p role="alert">Não consegui carregar a lista de projetos — recarregue a página.</p>
       )}
 
-      {selected && (
+      {repos?.length === 0 && (
+        <p className="app-empty">
+          Nenhum projeto disponível no momento — volte em breve.
+        </p>
+      )}
+
+      {repos && selected && (
         <>
           <RepoSelector repos={repos} selected={selected} onSelect={setSelected} />
           <Chat repoId={selected} />

@@ -52,6 +52,16 @@ describe("App", () => {
     );
   });
 
+  it("mostra estado vazio quando não há projetos cadastrados", async () => {
+    fetchReposMock.mockResolvedValueOnce([]);
+    render(<App />);
+
+    expect(
+      await screen.findByText(/nenhum projeto disponível/i),
+    ).toBeVisible();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
   it("mostra erro amigável quando a lista de projetos falha", async () => {
     fetchReposMock.mockRejectedValueOnce(new ApiError(500, "boom"));
     render(<App />);
