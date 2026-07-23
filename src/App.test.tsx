@@ -89,6 +89,33 @@ describe("App", () => {
     );
   });
 
+  it("mostra a descrição do projeto selecionado", async () => {
+    fetchReposMock.mockResolvedValueOnce(repos);
+    render(<App />);
+
+    expect(
+      await screen.findByRole("complementary", { name: "Sobre Overture" }),
+    ).toHaveTextContent(/agente react/i);
+
+    await userEvent.click(screen.getByRole("button", { name: "Encore" }));
+    expect(
+      screen.getByRole("complementary", { name: "Sobre Encore" }),
+    ).toHaveTextContent(/react.*typescript.*vite/i);
+  });
+
+  it("mantém o chat funcional para um projeto ainda sem descrição", async () => {
+    fetchReposMock.mockResolvedValueOnce([
+      { repo_id: "novo", display_name: "Projeto novo" },
+    ]);
+    render(<App />);
+
+    expect(
+      await screen.findByRole("button", { name: "Projeto novo" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toBeVisible();
+  });
+
   it("mostra estado vazio quando não há projetos cadastrados", async () => {
     fetchReposMock.mockResolvedValueOnce([]);
     render(<App />);

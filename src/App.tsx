@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Route, Switch } from "wouter";
 import { fetchRepos, type Repo } from "./api";
 import { Chat } from "./components/Chat";
+import { ProjectDescription } from "./components/ProjectDescription";
 import { RepoSelector } from "./components/RepoSelector";
 
 function Wordmark() {
@@ -93,6 +94,8 @@ function ProjectsPage() {
     };
   }, []);
 
+  const selectedRepo = repos?.find((repo) => repo.repo_id === selected);
+
   return (
     <section className="projects" aria-labelledby="projects-title">
       <header className="app-header">
@@ -111,9 +114,10 @@ function ProjectsPage() {
         </p>
       )}
 
-      {repos && selected && (
+      {repos && selected && selectedRepo && (
         <>
           <RepoSelector repos={repos} selected={selected} onSelect={setSelected} />
+          <ProjectDescription repo={selectedRepo} />
           <Chat repoId={selected} />
         </>
       )}
