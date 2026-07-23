@@ -32,6 +32,35 @@ function SiteHeader() {
   );
 }
 
+function SocialLinks() {
+  return (
+    <nav className="profile-links" aria-label="Links profissionais">
+      <a
+        href="https://www.linkedin.com/in/brunotlps/"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="LinkedIn"
+        title="LinkedIn"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M6.4 8.4H3.2V20h3.2V8.4ZM4.8 3A1.9 1.9 0 1 0 4.8 6.8 1.9 1.9 0 0 0 4.8 3ZM20.8 13.3c0-3.5-1.9-5.2-4.4-5.2a4 4 0 0 0-3.6 2v-1.7H9.6V20h3.2v-5.8c0-1.5.3-3 2.2-3s2 1.7 2 3.1V20h3.2l.6-6.7Z" />
+        </svg>
+      </a>
+      <a
+        href="https://www.99freelas.com.br/user/brunotlps"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="99Freelas"
+        title="99Freelas"
+      >
+        <span className="freelas-monogram" aria-hidden="true">
+          99
+        </span>
+      </a>
+    </nav>
+  );
+}
+
 function AboutPage() {
   return (
     <section className="about" aria-labelledby="about-title">
@@ -50,13 +79,16 @@ function AboutPage() {
           <Link href="/chat" className="primary-link">
             Conversar sobre os projetos
           </Link>
-          <a
-            href="https://github.com/Brunotlps"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
+          <div className="about-secondary-actions">
+            <a
+              href="https://github.com/Brunotlps"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            <SocialLinks />
+          </div>
         </div>
       </div>
 
@@ -71,23 +103,6 @@ function AboutPage() {
           encontrá-la.
         </p>
       </article>
-
-      <nav className="profile-links" aria-label="Links profissionais">
-        <a
-          href="https://www.linkedin.com/in/brunotlps/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://www.99freelas.com.br/user/brunotlps"
-          target="_blank"
-          rel="noreferrer"
-        >
-          99Freelas
-        </a>
-      </nav>
     </section>
   );
 }
