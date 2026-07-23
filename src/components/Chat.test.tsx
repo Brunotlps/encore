@@ -158,4 +158,34 @@ describe("Chat", () => {
     await sendQuestion("Como funciona o rate limit?");
     expect(screen.getByRole("textbox")).toHaveValue("");
   });
+
+  it("envia a pergunta ao pressionar Enter", async () => {
+    askMock.mockResolvedValueOnce(askResponse());
+    const user = userEvent.setup();
+    render(<Chat repoId="overture" />);
+
+    await user.type(screen.getByRole("textbox"), "Como funciona o agente?");
+    await user.keyboard("{Enter}");
+
+    expect(askMock).toHaveBeenCalledWith({
+      question: "Como funciona o agente?",
+      repoId: "overture",
+      threadId: undefined,
+    });
+    expect(screen.getByRole("textbox")).toHaveValue("");
+  });
+
+  it("mantém quebra de linha com Shift+Enter", async () => {
+    const user = userEvent.setup();
+    render(<Chat repoId="overture" />);
+
+    await user.type(screen.getByRole("textbox"), "Primeira linha");
+    await user.keyboard("{Shift>}{Enter}{/Shift}");
+    await user.type(screen.getByRole("textbox"), "Segunda linha");
+
+    expect(screen.getByRole("textbox")).toHaveValue(
+      "Primeira linha\nSegunda linha",
+    );
+    expect(askMock).not.toHaveBeenCalled();
+  });
 });

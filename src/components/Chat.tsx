@@ -1,4 +1,10 @@
-import { lazy, Suspense, useState, type FormEvent } from "react";
+import {
+  lazy,
+  Suspense,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
 import { ApiError, ask, type TrajectoryStep } from "../api";
 import { useThread } from "../hooks/useThread";
 import { Trajectory } from "./Trajectory";
@@ -54,6 +60,19 @@ export function Chat({ repoId }: { repoId: string }) {
     }
   }
 
+  function handleQuestionKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (
+      event.key !== "Enter" ||
+      event.shiftKey ||
+      event.nativeEvent.isComposing
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
+  }
+
   return (
     <section
       className="chat"
@@ -96,9 +115,12 @@ export function Chat({ repoId }: { repoId: string }) {
       <form onSubmit={handleSubmit} className="chat-form">
         <textarea
           aria-label="Pergunta sobre o projeto"
+          aria-keyshortcuts="Enter"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={handleQuestionKeyDown}
           placeholder="Pergunte algo sobre o código deste projeto…"
+          title="Enter envia · Shift+Enter insere uma nova linha"
           maxLength={500}
           rows={2}
         />
