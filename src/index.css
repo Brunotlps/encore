@@ -19,6 +19,10 @@
     monospace;
 }
 
+html {
+  color-scheme: dark;
+}
+
 *,
 *::before,
 *::after {
@@ -26,13 +30,32 @@
 }
 
 body {
+  min-width: 20rem;
+  min-height: 100dvh;
   margin: 0;
   background:
-    radial-gradient(60rem 40rem at 50% -20%, rgba(62, 207, 110, 0.07), transparent),
+    radial-gradient(60rem 40rem at 50% -20%, rgba(62, 207, 110, 0.1), transparent),
+    linear-gradient(rgba(11, 14, 12, 0.9), rgba(11, 14, 12, 0.98)),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 5.95rem,
+      rgba(62, 207, 110, 0.08) 5.95rem 6rem
+    ),
     var(--bg);
   color: var(--text);
   font-family: system-ui, sans-serif;
   line-height: 1.55;
+  overflow-x: hidden;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+:where(a, button, textarea, summary):focus-visible {
+  outline: 2px solid var(--green-bright);
+  outline-offset: 3px;
 }
 
 .app-shell {
@@ -55,11 +78,16 @@ body {
 /* ---------- header / wordmark ---------- */
 
 .site-header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
   min-height: 4.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
+  background: rgba(11, 14, 12, 0.84);
+  backdrop-filter: blur(0.8rem);
 }
 
 .site-header nav {
@@ -70,14 +98,31 @@ body {
 .site-header nav a,
 .profile-links a,
 .about-actions a {
+  position: relative;
   color: var(--text-dim);
   text-decoration: none;
+  transition: color 140ms ease;
 }
 
 .site-header nav a:hover,
 .profile-links a:hover,
 .about-actions a:not(.primary-link):hover {
   color: var(--green-bright);
+}
+
+.site-header nav a[aria-current="page"] {
+  color: var(--mint);
+}
+
+.site-header nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.45rem;
+  left: 0;
+  height: 1px;
+  background: var(--gradient);
+  box-shadow: 0 0 0.5rem rgba(62, 207, 110, 0.7);
 }
 
 .app-header {
@@ -120,10 +165,29 @@ body {
 
 .about-hero,
 .about-encore {
+  position: relative;
+  overflow: hidden;
   padding: clamp(1.25rem, 4vw, 2rem);
   border: 1px solid var(--border);
   border-radius: 1rem;
-  background: var(--surface);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(62, 207, 110, 0.09), transparent 32%),
+    var(--surface);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.16);
+}
+
+.about-hero::after,
+.about-encore::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 1.25rem;
+  width: 4.5rem;
+  height: 1px;
+  background: var(--gradient);
+  box-shadow:
+    1.25rem 1.25rem 0 rgba(62, 207, 110, 0.3),
+    -1.25rem 2.5rem 0 rgba(140, 236, 172, 0.18);
 }
 
 .eyebrow {
@@ -170,6 +234,10 @@ body {
   background: var(--gradient);
   color: #06120a;
   font-weight: 700;
+  box-shadow: 0 0.7rem 1.8rem rgba(47, 191, 95, 0.12);
+  transition:
+    filter 140ms ease,
+    transform 140ms ease;
 }
 
 .profile-links {
@@ -187,6 +255,8 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-bright) transparent;
 }
 
 .repo-selector button {
@@ -198,7 +268,11 @@ body {
   background: var(--surface);
   color: var(--text-dim);
   cursor: pointer;
-  transition: border-color 120ms, color 120ms, box-shadow 120ms;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .repo-selector button:hover {
@@ -209,12 +283,15 @@ body {
 .repo-selector button[aria-pressed="true"] {
   border-color: var(--green);
   color: var(--green-bright);
-  box-shadow: 0 0 0.9rem rgba(62, 207, 110, 0.25) inset;
+  box-shadow:
+    0 0 0.9rem rgba(62, 207, 110, 0.2) inset,
+    0 0 1rem rgba(62, 207, 110, 0.08);
 }
 
 /* ---------- descrição do projeto ---------- */
 
 .project-description {
+  animation: reveal 180ms ease-out;
   padding: 1rem 1.1rem;
   border: 1px solid var(--border);
   border-left-color: var(--green);
@@ -263,6 +340,7 @@ body {
 /* ---------- chat ---------- */
 
 .chat {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -270,6 +348,7 @@ body {
 }
 
 .chat-messages {
+  min-width: 0;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -280,11 +359,14 @@ body {
 }
 
 .chat-message {
+  min-width: 0;
   max-width: 85%;
   padding: 0.7rem 1rem;
   border-radius: 0.9rem;
   border: 1px solid var(--border);
   background: var(--surface);
+  overflow-wrap: anywhere;
+  animation: reveal 180ms ease-out;
 }
 
 .chat-message--user > p {
@@ -393,6 +475,8 @@ body {
   cursor: pointer;
   color: var(--green);
   list-style: none;
+  overflow-wrap: anywhere;
+  transition: color 140ms ease;
 }
 
 .trajectory summary::-webkit-details-marker {
@@ -466,14 +550,18 @@ body {
 
 /* ---------- estados ---------- */
 
-.chat-loading {
+.chat-loading,
+.repos-loading,
+.agent-answer-loading {
   margin: 0;
   color: var(--green);
   font-family: var(--mono);
   font-size: 0.85rem;
 }
 
-.chat-loading::after {
+.chat-loading::after,
+.repos-loading::after,
+.agent-answer-loading::after {
   content: "";
   display: inline-block;
   width: 1.2em;
@@ -541,7 +629,8 @@ body {
 }
 
 .chat-form textarea:focus-visible {
-  outline: none;
+  outline: 2px solid var(--green-bright);
+  outline-offset: 1px;
   border-color: var(--green);
   box-shadow: 0 0 0 2px rgba(62, 207, 110, 0.25);
 }
@@ -555,14 +644,139 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: filter 120ms;
+  transition:
+    filter 140ms ease,
+    transform 140ms ease;
 }
 
-.chat-form button:hover:not(:disabled) {
+.chat-form button:hover:not(:disabled),
+.about-actions .primary-link:hover {
   filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .chat-form button:disabled {
   filter: grayscale(0.7) brightness(0.6);
   cursor: not-allowed;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+}
+
+@media (hover: hover) {
+  .repo-selector button:hover {
+    transform: translateY(-1px);
+  }
+
+  .about-hero:hover,
+  .about-encore:hover {
+    border-color: var(--border-bright);
+  }
+}
+
+@media (max-width: 32rem) {
+  .app-shell {
+    padding-inline: 0.9rem;
+  }
+
+  .app {
+    padding-top: 1.4rem;
+  }
+
+  .site-header {
+    min-height: 4rem;
+  }
+
+  .site-header nav {
+    gap: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .wordmark {
+    font-size: 1.18rem;
+  }
+
+  .about {
+    gap: 1rem;
+  }
+
+  .about-hero,
+  .about-encore {
+    padding: 1.1rem;
+  }
+
+  .about h1 {
+    max-width: none;
+    font-size: clamp(1.85rem, 9vw, 2.45rem);
+  }
+
+  .about-actions {
+    flex-wrap: wrap;
+  }
+
+  .profile-links {
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .projects {
+    gap: 1.15rem;
+  }
+
+  .repo-selector {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-inline: -0.9rem;
+    padding: 0.15rem 0.9rem 0.45rem;
+    overflow-x: auto;
+  }
+
+  .repo-selector button {
+    flex: 0 0 auto;
+  }
+
+  .project-description {
+    padding: 0.9rem;
+  }
+
+  .chat-message {
+    max-width: 94%;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .chat-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .chat-form textarea {
+    width: 100%;
+    min-height: 4.75rem;
+  }
+
+  .chat-form button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 23rem) {
+  .about-actions .primary-link {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

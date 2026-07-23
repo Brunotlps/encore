@@ -98,11 +98,17 @@ describe("Chat", () => {
 
     await sendQuestion("Como funciona o rate limit?");
     expect(screen.getByRole("status")).toBeVisible();
+    expect(
+      screen.getByRole("region", { name: "Conversa sobre overture" }),
+    ).toHaveAttribute("aria-busy", "true");
 
     resolve(askResponse());
     await waitFor(() =>
       expect(screen.queryByRole("status")).not.toBeInTheDocument(),
     );
+    expect(
+      screen.getByRole("region", { name: "Conversa sobre overture" }),
+    ).toHaveAttribute("aria-busy", "false");
   });
 
   it("primeira pergunta vai sem thread_id; a seguinte reusa o recebido", async () => {

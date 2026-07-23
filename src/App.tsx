@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Route, Switch } from "wouter";
+import { Link, Route, Switch, useLocation } from "wouter";
 import { fetchRepos, type Repo } from "./api";
 import { Chat } from "./components/Chat";
 import { ProjectDescription } from "./components/ProjectDescription";
@@ -10,6 +10,25 @@ function Wordmark() {
     <Link href="/" className="wordmark" aria-label="Encore — página inicial">
       enc<span className="wordmark-accent">o</span>re
     </Link>
+  );
+}
+
+function SiteHeader() {
+  const [location] = useLocation();
+  const isProjects = location === "/chat";
+
+  return (
+    <header className="site-header">
+      <Wordmark />
+      <nav aria-label="Navegação principal">
+        <Link href="/" aria-current={!isProjects ? "page" : undefined}>
+          Sobre
+        </Link>
+        <Link href="/chat" aria-current={isProjects ? "page" : undefined}>
+          Projetos
+        </Link>
+      </nav>
+    </header>
   );
 }
 
@@ -104,6 +123,12 @@ function ProjectsPage() {
         <p>Faça uma pergunta e acompanhe a investigação do agente.</p>
       </header>
 
+      {repos === null && !failed && (
+        <p role="status" className="repos-loading">
+          Carregando projetos…
+        </p>
+      )}
+
       {failed && (
         <p role="alert">Não consegui carregar a lista de projetos — recarregue a página.</p>
       )}
@@ -128,13 +153,7 @@ function ProjectsPage() {
 export default function App() {
   return (
     <div className="app-shell">
-      <header className="site-header">
-        <Wordmark />
-        <nav aria-label="Navegação principal">
-          <Link href="/">Sobre</Link>
-          <Link href="/chat">Projetos</Link>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main className="app">
         <Switch>

@@ -55,8 +55,12 @@ export function Chat({ repoId }: { repoId: string }) {
   }
 
   return (
-    <section className="chat">
-      <ol className="chat-messages">
+    <section
+      className="chat"
+      aria-label={`Conversa sobre ${repoId}`}
+      aria-busy={loading}
+    >
+      <ol className="chat-messages" aria-live="polite">
         {messages.map((message, i) => (
           <li key={i} className={`chat-message chat-message--${message.role}`}>
             {message.role === "user" ? (
@@ -91,6 +95,7 @@ export function Chat({ repoId }: { repoId: string }) {
 
       <form onSubmit={handleSubmit} className="chat-form">
         <textarea
+          aria-label="Pergunta sobre o projeto"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Pergunte algo sobre o código deste projeto…"

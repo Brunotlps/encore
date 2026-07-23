@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, fetchRepos } from "./api";
@@ -20,6 +20,7 @@ const repos = [
 
 beforeEach(() => {
   vi.clearAllMocks();
+  fetchReposMock.mockReset();
   sessionStorage.clear();
   window.history.replaceState({}, "", "/chat");
 });
@@ -50,11 +51,22 @@ describe("App", () => {
     window.history.replaceState({}, "", "/");
     render(<App />);
 
+    const navigation = screen.getByRole("navigation", {
+      name: "Navegação principal",
+    });
+    expect(within(navigation).getByRole("link", { name: "Sobre" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
     await userEvent.click(
       screen.getByRole("link", { name: /conversar sobre os projetos/i }),
     );
     expect(await screen.findByRole("button", { name: "Overture" })).toBeVisible();
     expect(window.location.pathname).toBe("/chat");
+    expect(
+      within(navigation).getByRole("link", { name: "Projetos" }),
+    ).toHaveAttribute("aria-current", "page");
 
     await userEvent.click(screen.getByRole("link", { name: /sobre/i }));
     expect(screen.getByText(/sou desenvolvedor backend/i)).toBeVisible();
@@ -72,6 +84,13 @@ describe("App", () => {
       "false",
     );
     expect(screen.getByRole("textbox")).toBeVisible(); // chat pronto
+  });
+
+  it("informa enquanto carrega a lista de projetos", () => {
+    fetchReposMock.mockReturnValueOnce(new Promise(() => undefined));
+    render(<App />);
+
+    expect(screen.getByRole("status")).toHaveTextContent(/carregando projetos/i);
   });
 
   it("trocar de projeto move a seleção", async () => {
