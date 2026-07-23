@@ -51,6 +51,8 @@ export interface Messages {
     aboutRepo: (displayName: string) => string;
     stackAria: string;
     suggestedQuestion: string;
+    repositoryLink: string;
+    repositoryLinkAria: (displayName: string) => string;
   };
   chat: {
     regionAria: (repoId: string) => string;
@@ -62,6 +64,8 @@ export interface Messages {
     send: string;
   };
   trajectory: {
+    title: string;
+    steps: (count: number) => string;
     iterations: (count: number) => string;
   };
   errors: {

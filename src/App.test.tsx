@@ -207,11 +207,17 @@ describe("App", () => {
     expect(
       await screen.findByRole("complementary", { name: "Sobre Overture" }),
     ).toHaveTextContent(/agente react/i);
+    expect(
+      screen.getByRole("link", { name: "Abrir Overture no GitHub" }),
+    ).toHaveAttribute("href", "https://github.com/Brunotlps/overture");
 
     await userEvent.click(screen.getByRole("button", { name: "Encore" }));
     expect(
       screen.getByRole("complementary", { name: "Sobre Encore" }),
     ).toHaveTextContent(/react.*typescript.*vite/i);
+    expect(
+      screen.getByRole("link", { name: "Abrir Encore no GitHub" }),
+    ).toHaveAttribute("href", "https://github.com/Brunotlps/encore");
   });
 
   it("mantém o chat funcional para um projeto ainda sem descrição", async () => {

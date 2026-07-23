@@ -65,6 +65,8 @@ export const en: Messages = {
     aboutRepo: (displayName) => `About ${displayName}`,
     stackAria: "Stack and technologies",
     suggestedQuestion: "Try asking",
+    repositoryLink: "GitHub",
+    repositoryLinkAria: (displayName) => `Open ${displayName} on GitHub`,
   },
   chat: {
     regionAria: (repoId) => `Conversation about ${repoId}`,
@@ -76,6 +78,8 @@ export const en: Messages = {
     send: "Send",
   },
   trajectory: {
+    title: "Investigation path",
+    steps: (count) => `${count} ${count === 1 ? "step" : "steps"}`,
     iterations: (count) => `${count} ${count === 1 ? "iteration" : "iterations"}`,
   },
   errors: {

@@ -65,6 +65,8 @@ export const ptBR: Messages = {
     aboutRepo: (displayName) => `Sobre ${displayName}`,
     stackAria: "Stack e tecnologias",
     suggestedQuestion: "Experimente perguntar",
+    repositoryLink: "GitHub",
+    repositoryLinkAria: (displayName) => `Abrir ${displayName} no GitHub`,
   },
   chat: {
     regionAria: (repoId) => `Conversa sobre ${repoId}`,
@@ -76,6 +78,8 @@ export const ptBR: Messages = {
     send: "Enviar",
   },
   trajectory: {
+    title: "Caminho da investigação",
+    steps: (count) => `${count} ${count === 1 ? "etapa" : "etapas"}`,
     iterations: (count) => `${count} ${count === 1 ? "iteração" : "iterações"}`,
   },
   errors: {

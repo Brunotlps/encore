@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { en } from "./i18n/en";
 import { ptBR } from "./i18n/pt-BR";
-import { getProjectDetails } from "./project-details";
+import { getProjectDetails, getRepositoryUrl } from "./project-details";
 
 describe("getProjectDetails", () => {
   it.each([
@@ -20,5 +20,15 @@ describe("getProjectDetails", () => {
     expect(
       getProjectDetails(ptBR.projectDetails, "ainda-nao-mapeado"),
     ).toBeUndefined();
+  });
+
+  it.each([
+    ["overture", "https://github.com/Brunotlps/overture"],
+    ["codda", "https://github.com/Brunotlps/codda"],
+    ["briskmail", "https://github.com/Brunotlps/email-classifier"],
+    ["interlude", "https://github.com/Brunotlps/interlude"],
+    ["encore", "https://github.com/Brunotlps/encore"],
+  ])("mapeia %s para o repositório público correto", (repoId, url) => {
+    expect(getRepositoryUrl(repoId)).toBe(url);
   });
 });

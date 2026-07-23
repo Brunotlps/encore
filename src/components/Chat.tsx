@@ -8,6 +8,7 @@ import {
 import { ApiError, ask, type TrajectoryStep } from "../api";
 import { useThread } from "../hooks/useThread";
 import { useI18n } from "../i18n/I18nProvider";
+import { AgentLoader } from "./AgentLoader";
 import { Trajectory } from "./Trajectory";
 
 const AgentMarkdown = lazy(() => import("./AgentMarkdown"));
@@ -102,7 +103,7 @@ export function Chat({ repoId }: { repoId: string }) {
             ) : (
               <>
                 <Suspense
-                  fallback={<p className="agent-answer-loading">{ui.chat.formatting}</p>}
+                  fallback={<AgentLoader label={ui.chat.formatting} compact />}
                 >
                   <AgentMarkdown>{message.text}</AgentMarkdown>
                 </Suspense>
@@ -117,9 +118,7 @@ export function Chat({ repoId }: { repoId: string }) {
       </ol>
 
       {loading && (
-        <p role="status" className="chat-loading">
-          {ui.chat.loading}
-        </p>
+        <AgentLoader label={ui.chat.loading} />
       )}
       {error && (
         <p role="alert" className="chat-error">

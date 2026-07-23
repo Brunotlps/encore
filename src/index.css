@@ -561,8 +561,56 @@ textarea {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
-.project-description > p:first-child {
+.project-description__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.project-description__top > p {
+  flex: 1;
   margin: 0;
+}
+
+.repository-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid var(--border-bright);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-decoration: none;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease,
+    background 140ms ease;
+}
+
+.repository-link:hover {
+  border-color: rgba(119, 217, 154, 0.55);
+  background: rgba(59, 197, 108, 0.07);
+  color: var(--green-bright);
+}
+
+.repository-link svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+.repository-link .repository-link__arrow {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .project-description ul {
@@ -724,107 +772,253 @@ textarea {
   color: var(--text-dim);
 }
 
-/* ---------- trajetória: trilha de circuito ---------- */
+/* ---------- trajetória da investigação ---------- */
 
 .trajectory {
-  margin-top: 0.7rem;
-  border-top: 1px dashed var(--border-bright);
-  padding-top: 0.55rem;
+  margin: 0.85rem -0.2rem -0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(145deg, rgba(59, 197, 108, 0.035), transparent 46%),
+    rgba(1, 3, 2, 0.55);
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  overflow: hidden;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.trajectory[open] {
+  border-color: rgba(59, 197, 108, 0.28);
+  background:
+    linear-gradient(145deg, rgba(59, 197, 108, 0.05), transparent 42%),
+    rgba(1, 3, 2, 0.72);
 }
 
 .trajectory summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
   cursor: pointer;
-  color: var(--green);
   list-style: none;
-  overflow-wrap: anywhere;
-  transition: color 140ms ease;
+  transition: background 140ms ease;
 }
 
 .trajectory summary::-webkit-details-marker {
   display: none;
 }
 
-.trajectory summary::before {
-  content: "▸ ";
-  color: var(--text-dim);
-}
-
-.trajectory[open] summary::before {
-  content: "▾ ";
-}
-
 .trajectory summary:hover {
+  background: rgba(59, 197, 108, 0.045);
+}
+
+.trajectory-overview-icon,
+.trajectory-node {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(59, 197, 108, 0.3);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(119, 217, 154, 0.12), transparent 62%),
+    var(--surface-2);
   color: var(--green-bright);
 }
 
-.trajectory ol {
+.trajectory-overview-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.55rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.trajectory-overview-icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trajectory-overview {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.trajectory-overview > strong {
+  color: var(--mint);
+  font-family: var(--sans);
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.trajectory-overview > span {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  color: var(--text-dim);
+  font-size: 0.68rem;
+  overflow-wrap: anywhere;
+}
+
+.trajectory-overview i {
+  width: 0.2rem;
+  height: 0.2rem;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.65;
+}
+
+.trajectory-chevron {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  color: var(--text-dim);
+  transition:
+    color 140ms ease,
+    transform 180ms ease;
+}
+
+.trajectory-chevron svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trajectory[open] .trajectory-chevron {
+  color: var(--green-bright);
+  transform: rotate(180deg);
+}
+
+.trajectory-steps {
   list-style: none;
-  margin: 0.7rem 0 0;
-  padding: 0 0 0 0.55rem;
+  margin: 0;
+  padding: 0.8rem 0.7rem 0.75rem;
+  border-top: 1px solid var(--border);
 }
 
-/* cada passo é um nó da trilha: ponto + linha vertical, como na logo */
-.trajectory li {
+.trajectory-steps > li {
   position: relative;
-  padding: 0 0 0.9rem 1.1rem;
-  border-left: 1px solid var(--border-bright);
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.65rem;
 }
 
-.trajectory li:last-child {
-  border-left-color: transparent;
-  padding-bottom: 0;
+.trajectory-steps > li + li {
+  margin-top: 0.65rem;
 }
 
-.trajectory li::before {
+.trajectory-steps > li:not(:last-child)::after {
   content: "";
   position: absolute;
-  left: -0.31rem;
-  top: 0.2rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  border: 1.5px solid var(--green);
-  background: var(--bg);
+  z-index: 0;
+  top: 1.95rem;
+  bottom: -0.72rem;
+  left: 0.98rem;
+  width: 1px;
+  background: linear-gradient(var(--green), var(--border-bright));
+  opacity: 0.45;
 }
 
-.trajectory li strong {
+.trajectory-node {
+  position: relative;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+.trajectory-tool-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trajectory-icon-detail {
+  opacity: 0.48;
+  stroke-width: 1.2;
+}
+
+.trajectory-step {
+  min-width: 0;
+  padding: 0.6rem 0.65rem;
+  border: 1px solid rgba(39, 52, 43, 0.72);
+  border-radius: 0.6rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.018), transparent 50%),
+    rgba(8, 11, 9, 0.72);
+}
+
+.trajectory-step header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.trajectory-step header strong {
   color: var(--mint);
+  font-size: 0.74rem;
   font-weight: 600;
 }
 
-.trajectory li code {
-  display: block;
-  margin: 0.25rem 0;
-  padding: 0.3rem 0.55rem;
-  border-radius: 0.4rem;
-  background: var(--surface-2);
-  color: var(--green-bright);
-  overflow-x: auto;
+.trajectory-step header span {
+  color: var(--green);
+  font-size: 0.61rem;
+  letter-spacing: 0.08em;
 }
 
-.trajectory li p {
+.trajectory-step code {
+  display: block;
+  max-width: 100%;
+  margin: 0 0 0.4rem;
+  padding: 0.35rem 0.48rem;
+  border: 1px solid rgba(39, 52, 43, 0.55);
+  border-radius: 0.38rem;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--green-bright);
+  overflow-x: auto;
+  font-size: 0.68rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.trajectory-step p {
   margin: 0;
   color: var(--text-dim);
   font-family: var(--sans);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 /* ---------- estados ---------- */
 
-.chat-loading,
-.repos-loading,
-.agent-answer-loading {
+.repos-loading {
   margin: 0;
   color: var(--green);
   font-family: var(--mono);
   font-size: 0.85rem;
 }
 
-.chat-loading::after,
-.repos-loading::after,
-.agent-answer-loading::after {
+.repos-loading::after {
   content: "";
   display: inline-block;
   width: 1.2em;
@@ -844,6 +1038,101 @@ textarea {
   }
   75% {
     content: "...";
+  }
+}
+
+.agent-loader {
+  width: 7.2rem;
+  padding: 0.72rem 0.85rem;
+  align-self: flex-start;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem 0.75rem 0.75rem 0.22rem;
+  background:
+    linear-gradient(145deg, rgba(59, 197, 108, 0.045), transparent),
+    var(--surface);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 0.65rem 1.5rem rgba(0, 0, 0, 0.16);
+}
+
+.agent-loader--compact {
+  width: 5.8rem;
+  padding: 0.55rem 0.65rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.agent-loader__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 0.7rem;
+}
+
+.agent-loader__track::before {
+  content: "";
+  position: absolute;
+  right: 0.25rem;
+  left: 0.25rem;
+  height: 1px;
+  background: var(--border-bright);
+}
+
+.agent-loader__beam {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  width: 42%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-bright), transparent);
+  filter: drop-shadow(0 0 0.25rem rgba(119, 217, 154, 0.8));
+  animation: agent-beam 1.45s ease-in-out infinite;
+}
+
+.agent-loader__node {
+  position: relative;
+  z-index: 2;
+  width: 0.58rem;
+  height: 0.58rem;
+  border: 1.5px solid var(--green);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 0 0 0 rgba(59, 197, 108, 0);
+  animation: agent-node 1.45s ease-in-out infinite;
+}
+
+.agent-loader__node:nth-of-type(3) {
+  animation-delay: 180ms;
+}
+
+.agent-loader__node:nth-of-type(4) {
+  animation-delay: 360ms;
+}
+
+@keyframes agent-beam {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateX(140%);
+    opacity: 1;
+  }
+}
+
+@keyframes agent-node {
+  0%,
+  100% {
+    border-color: var(--border-bright);
+    transform: scale(0.86);
+  }
+  45% {
+    border-color: var(--green-bright);
+    box-shadow: 0 0 0.45rem rgba(59, 197, 108, 0.45);
+    transform: scale(1);
   }
 }
 
@@ -1040,9 +1329,18 @@ textarea {
     padding: 0.9rem;
   }
 
+  .project-description__top {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
   .chat-message {
     max-width: 94%;
     padding: 0.65rem 0.8rem;
+  }
+
+  .trajectory {
+    margin-inline: -0.1rem;
   }
 
   .chat-form {

@@ -45,7 +45,16 @@ describe("Chat", () => {
 
     expect(screen.getByText("Como funciona o rate limit?")).toBeVisible();
     expect(await screen.findByText("O rate limit usa KV.")).toBeVisible();
-    expect(screen.getByText("🔍 grep_repo · 2 iterações")).toBeInTheDocument();
+    const trajectoryTitle = screen.getByText("Caminho da investigação");
+    const summary = trajectoryTitle.closest("summary");
+    expect(summary).toHaveTextContent("1 etapa");
+    expect(summary).toHaveTextContent("2 iterações");
+    expect(summary).not.toHaveTextContent(/[🔍📄🔧]/u);
+    expect(
+      trajectoryTitle.closest("details")?.querySelector(
+        ".trajectory-tool-icon--search",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("renderiza markdown do agente com semântica e código legível", async () => {
@@ -99,7 +108,13 @@ describe("Chat", () => {
     render(<Chat repoId="overture" />);
 
     await sendQuestion("Como funciona o rate limit?");
-    expect(screen.getByRole("status")).toBeVisible();
+    const status = screen.getByRole("status");
+    expect(status).toBeVisible();
+    expect(status).toHaveAccessibleName(
+      "O agente está investigando o código…",
+    );
+    expect(status).toHaveTextContent(/^$/);
+    expect(status.querySelectorAll(".agent-loader__node")).toHaveLength(3);
     expect(
       screen.getByRole("region", { name: "Conversa sobre overture" }),
     ).toHaveAttribute("aria-busy", "true");
