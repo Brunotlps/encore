@@ -74,6 +74,20 @@ Descartadas:
 - **IP + teto + Turnstile (CAPTCHA)** — máxima proteção, mas atrito e código extras;
   exagero pra vitrine de baixo tráfego.
 
+### Rate limit implementado 100% em KV (não no rate limiting binding)
+
+Contexto: a decisão anterior citava o rate limiting binding do Workers como exemplo para
+o limite por IP, mas o binding não está disponível em Pages Functions.
+
+Decisão: as duas camadas (IP/min e teto diário) vivem em Workers KV, com janelas fixas
+(`ip:<ip>:<minuto>` e `global:<dia>`) e TTL nativo. Trade-offs aceitos, ambos
+irrelevantes nesta escala: consistência eventual do KV (rajada pode furar o limite por
+segundos) e janela fixa (rajada na virada do minuto pode passar até 2× o limite —
+observado e confirmado em produção durante a validação).
+
+Descartada: migrar de Pages para Worker com static assets só para ter o binding nativo
+— mais mudança de infra do que o benefício justifica.
+
 ## Em aberto (resolver com o usuário antes de codar)
 
 (nenhuma no momento)
