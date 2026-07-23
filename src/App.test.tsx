@@ -29,6 +29,16 @@ beforeEach(() => {
 });
 
 describe("App", () => {
+  it("usa a marca do favicon como o no wordmark", () => {
+    window.history.replaceState({}, "", "/");
+    render(<App />);
+
+    const wordmark = screen.getByRole("link", {
+      name: "Encore — página inicial",
+    });
+    expect(wordmark.querySelector("svg.encore-mark")).toBeInTheDocument();
+  });
+
   it("apresenta Bruno e o propósito do Encore na página inicial", () => {
     window.history.replaceState({}, "", "/");
     render(<App />);

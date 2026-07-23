@@ -204,20 +204,26 @@ textarea {
 }
 
 .wordmark {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--mono);
   font-weight: 600;
   font-size: 1.35rem;
-  letter-spacing: 0.14em;
   color: var(--mint);
   text-decoration: none;
 }
 
-.wordmark-accent {
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.wordmark > span {
+  letter-spacing: 0.14em;
+}
+
+.encore-mark {
+  width: 0.82em;
+  height: 0.82em;
+  margin: 0 0.08em 0 -0.04em;
+  flex: 0 0 auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 0.25rem rgba(59, 197, 108, 0.18));
 }
 
 .app-header p {

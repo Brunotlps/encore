@@ -7,12 +7,51 @@ import { ProjectDescription } from "./components/ProjectDescription";
 import { RepoSelector } from "./components/RepoSelector";
 import { I18nProvider, useI18n } from "./i18n/I18nProvider";
 
+function EncoreMark() {
+  return (
+    <svg
+      className="encore-mark"
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient
+          id="wordmark-o"
+          x1="13"
+          y1="12"
+          x2="51"
+          y2="52"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#2fbd63" />
+          <stop offset="1" stopColor="#9ae5b2" />
+        </linearGradient>
+      </defs>
+      <circle
+        cx="32"
+        cy="32"
+        r="17.25"
+        fill="none"
+        stroke="url(#wordmark-o)"
+        strokeWidth="7.5"
+        strokeLinecap="round"
+        strokeDasharray="94.8 13.6"
+        transform="rotate(-42 32 32)"
+      />
+      <circle cx="47" cy="18.5" r="2.4" fill="#b7e9c7" />
+    </svg>
+  );
+}
+
 function Wordmark() {
   const { messages } = useI18n();
 
   return (
     <Link href="/" className="wordmark" aria-label={messages.header.homeAria}>
-      enc<span className="wordmark-accent">o</span>re
+      <span>enc</span>
+      <EncoreMark />
+      <span>re</span>
     </Link>
   );
 }
