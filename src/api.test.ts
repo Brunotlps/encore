@@ -71,6 +71,21 @@ describe("ask", () => {
     expect((error as ApiError).detail).toBe("volte amanhã");
   });
 
+  it("usa mensagem genérica quando detail não é string (422 do FastAPI)", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      Response.json(
+        { detail: [{ type: "string_too_short", loc: ["body", "question"] }] },
+        { status: 422 },
+      ),
+    );
+
+    const error = await ask({ question: "Oi?", repoId: "overture" }).catch(
+      (e: unknown) => e,
+    );
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).detail).toMatch(/inesperado/i);
+  });
+
   it("usa mensagem genérica quando o corpo de erro não é JSON", async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
       new Response("<html>gateway error</html>", { status: 502 }),

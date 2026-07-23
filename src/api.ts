@@ -30,9 +30,13 @@ export class ApiError extends Error {
 
 async function toApiError(response: Response): Promise<ApiError> {
   const fallback = "Erro inesperado — tente de novo em instantes.";
+  // detail nem sempre é string: o 422 do FastAPI manda um array de objetos.
   const detail = await response
     .json()
-    .then((body) => (body as { detail?: string }).detail ?? fallback)
+    .then((body) => {
+      const raw = (body as { detail?: unknown }).detail;
+      return typeof raw === "string" ? raw : fallback;
+    })
     .catch(() => fallback);
   return new ApiError(response.status, detail);
 }
