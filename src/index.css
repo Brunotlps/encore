@@ -287,7 +287,7 @@ body {
   background: var(--surface);
 }
 
-.chat-message p {
+.chat-message--user > p {
   margin: 0;
   white-space: pre-wrap;
 }
@@ -306,6 +306,77 @@ body {
 .chat-message--agent {
   align-self: flex-start;
   border-bottom-left-radius: 0.25rem;
+}
+
+.agent-answer > :first-child {
+  margin-top: 0;
+}
+
+.agent-answer > :last-child {
+  margin-bottom: 0;
+}
+
+.agent-answer h1,
+.agent-answer h2,
+.agent-answer h3,
+.agent-answer h4 {
+  margin: 1rem 0 0.45rem;
+  color: var(--mint);
+  font-size: 1em;
+  line-height: 1.3;
+}
+
+.agent-answer p,
+.agent-answer ul,
+.agent-answer ol,
+.agent-answer blockquote,
+.agent-answer pre {
+  margin: 0.65rem 0;
+}
+
+.agent-answer ul,
+.agent-answer ol {
+  padding-left: 1.35rem;
+}
+
+.agent-answer li + li {
+  margin-top: 0.25rem;
+}
+
+.agent-answer a {
+  color: var(--green-bright);
+  text-underline-offset: 0.15em;
+}
+
+.agent-answer code {
+  padding: 0.12rem 0.3rem;
+  border-radius: 0.3rem;
+  background: var(--surface-2);
+  color: var(--green-bright);
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+
+.agent-answer pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--bg);
+}
+
+.agent-answer pre code {
+  padding: 0;
+  background: transparent;
+  color: var(--mint);
+  font-size: 0.82rem;
+}
+
+.agent-answer blockquote {
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--green);
+  color: var(--text-dim);
 }
 
 /* ---------- trajetória: trilha de circuito ---------- */

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, ask, type AskResponse } from "../api";
@@ -44,6 +44,51 @@ describe("Chat", () => {
     expect(screen.getByText("Como funciona o rate limit?")).toBeVisible();
     expect(await screen.findByText("O rate limit usa KV.")).toBeVisible();
     expect(screen.getByText("🔍 grep_repo · 2 iterações")).toBeInTheDocument();
+  });
+
+  it("renderiza markdown do agente com semântica e código legível", async () => {
+    askMock.mockResolvedValueOnce(
+      askResponse({
+        answer: [
+          "## Arquitetura",
+          "",
+          "- API",
+          "- Worker",
+          "",
+          "```ts",
+          "const safe = true;",
+          "```",
+        ].join("\n"),
+      }),
+    );
+    render(<Chat repoId="overture" />);
+
+    await sendQuestion("Explique a arquitetura");
+
+    const heading = await screen.findByRole("heading", {
+      name: "Arquitetura",
+      level: 2,
+    });
+    expect(heading).toBeVisible();
+    expect(within(heading.parentElement!).getByRole("list")).toHaveTextContent(
+      /API\s+Worker/,
+    );
+    expect(screen.getByText("const safe = true;")).toBeVisible();
+  });
+
+  it("ignora HTML cru do agente e mantém a pergunta como texto puro", async () => {
+    askMock.mockResolvedValueOnce(
+      askResponse({
+        answer: 'Resposta <img src="x" alt="injetada" onerror="alert(1)"> segura.',
+      }),
+    );
+    const { container } = render(<Chat repoId="overture" />);
+
+    await sendQuestion("**pergunta literal**");
+
+    expect(await screen.findByText("**pergunta literal**")).toBeVisible();
+    expect(container.querySelector(".chat-message--user strong")).toBeNull();
+    expect(screen.queryByRole("img", { name: "injetada" })).not.toBeInTheDocument();
   });
 
   it("mostra indicador de carregamento enquanto espera e limpa depois", async () => {

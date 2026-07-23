@@ -1,7 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { lazy, Suspense, useState, type FormEvent } from "react";
 import { ApiError, ask, type TrajectoryStep } from "../api";
 import { useThread } from "../hooks/useThread";
 import { Trajectory } from "./Trajectory";
+
+const AgentMarkdown = lazy(() => import("./AgentMarkdown"));
 
 type Message =
   | { role: "user"; text: string }
@@ -57,9 +59,20 @@ export function Chat({ repoId }: { repoId: string }) {
       <ol className="chat-messages">
         {messages.map((message, i) => (
           <li key={i} className={`chat-message chat-message--${message.role}`}>
-            <p>{message.text}</p>
-            {message.role === "agent" && (
-              <Trajectory steps={message.trajectory} iterations={message.iterations} />
+            {message.role === "user" ? (
+              <p>{message.text}</p>
+            ) : (
+              <>
+                <Suspense
+                  fallback={<p className="agent-answer-loading">Formatando resposta…</p>}
+                >
+                  <AgentMarkdown>{message.text}</AgentMarkdown>
+                </Suspense>
+                <Trajectory
+                  steps={message.trajectory}
+                  iterations={message.iterations}
+                />
+              </>
             )}
           </li>
         ))}
