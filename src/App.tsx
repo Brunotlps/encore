@@ -65,7 +65,7 @@ function AboutPage() {
   return (
     <section className="about" aria-labelledby="about-title">
       <div className="about-hero">
-        <p className="eyebrow">Bruno Teixeira · Backend Engineer</p>
+        <p className="eyebrow">Bruno Teixeira · Backend Developer</p>
         <h1 id="about-title">
           Backend, APIs e agentes de IA construídos para funcionar em produção.
         </h1>
@@ -97,6 +97,7 @@ function AboutPage() {
             permite investigar decisões de arquitetura, implementação, testes e
             segurança conversando diretamente sobre o código.
           </p>
+
           <p className="encore-highlight">
             Não é um chat genérico: cada resposta parte do projeto selecionado e vem
             acompanhada das ferramentas que o agente usou para encontrá-la.
@@ -117,7 +118,7 @@ function AboutPage() {
           <li>
             <span aria-hidden="true">03</span>
             <h3>Acompanhe o percurso</h3>
-            <p>Veja as ferramentas consultadas junto da resposta em markdown.</p>
+            <p>Veja as ferramentas consultadas junto da resposta.</p>
           </li>
         </ol>
 
@@ -136,11 +137,6 @@ function AboutPage() {
             <p>Python, FastAPI, LangGraph e ferramentas de leitura do código.</p>
           </div>
         </div>
-
-        <p className="encore-security">
-          Uma função serverless faz a ponte entre os dois sem expor a chave da API no
-          navegador.
-        </p>
 
         <footer className="encore-action">
           <div>
