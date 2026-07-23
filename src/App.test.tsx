@@ -21,9 +21,46 @@ const repos = [
 beforeEach(() => {
   vi.clearAllMocks();
   sessionStorage.clear();
+  window.history.replaceState({}, "", "/chat");
 });
 
 describe("App", () => {
+  it("apresenta Bruno e o propósito do Encore na página inicial", () => {
+    window.history.replaceState({}, "", "/");
+    render(<App />);
+
+    expect(screen.getByText(/sou desenvolvedor backend/i)).toBeVisible();
+    expect(screen.getByText(/portfólio interativo/i)).toBeVisible();
+    expect(screen.getByRole("link", { name: /github/i })).toHaveAttribute(
+      "href",
+      "https://github.com/Brunotlps",
+    );
+    expect(screen.getByRole("link", { name: /linkedin/i })).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/brunotlps/",
+    );
+    expect(screen.getByRole("link", { name: /99freelas/i })).toHaveAttribute(
+      "href",
+      "https://www.99freelas.com.br/user/brunotlps",
+    );
+  });
+
+  it("navega claramente entre About e chat", async () => {
+    fetchReposMock.mockResolvedValueOnce(repos);
+    window.history.replaceState({}, "", "/");
+    render(<App />);
+
+    await userEvent.click(
+      screen.getByRole("link", { name: /conversar sobre os projetos/i }),
+    );
+    expect(await screen.findByRole("button", { name: "Overture" })).toBeVisible();
+    expect(window.location.pathname).toBe("/chat");
+
+    await userEvent.click(screen.getByRole("link", { name: /sobre/i }));
+    expect(screen.getByText(/sou desenvolvedor backend/i)).toBeVisible();
+    expect(window.location.pathname).toBe("/");
+  });
+
   it("lista os projetos e pré-seleciona o primeiro", async () => {
     fetchReposMock.mockResolvedValueOnce(repos);
     render(<App />);

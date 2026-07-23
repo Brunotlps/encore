@@ -91,3 +91,39 @@ Descartada: migrar de Pages para Worker com static assets só para ter o binding
 ## Em aberto (resolver com o usuário antes de codar)
 
 (nenhuma no momento)
+
+## Sprint de modernização da UI
+
+### Navegação: rotas reais com Wouter
+
+Contexto: a nova página About precisa de navegação clara nos dois sentidos e URLs
+compartilháveis, sem transformar a SPA pequena em uma aplicação com infraestrutura de
+roteamento pesada.
+
+Decisão: usar Wouter com `/` para About e `/chat` para a experiência de projetos. O
+carregamento de repositórios fica restrito à rota de chat.
+
+Descartada: controlar a tela apenas em estado local — eliminaria uma dependência, mas
+não permitiria compartilhar ou recarregar uma tela específica.
+
+### Descrições de projetos: conteúdo estático indexado por repo_id
+
+Contexto: o contrato de `GET /repos` expõe apenas `repo_id` e `display_name`.
+
+Decisão: manter descrições editoriais em um módulo TypeScript do frontend, indexadas por
+`repo_id`, e omitir o bloco quando o backend retornar um projeto ainda não descrito.
+
+Descartada: ampliar o contrato da API — o backend está fora de escopo e o conteúdo é
+específico deste portfólio.
+
+### Markdown: react-markdown sem HTML cru
+
+Contexto: respostas do agente contêm markdown útil, mas são conteúdo não confiável
+gerado por LLM.
+
+Decisão: renderizar somente mensagens do agente com `react-markdown`, sem `rehype-raw` e
+com HTML cru explicitamente ignorado. Mensagens do visitante continuam como texto puro.
+O custo no bundle será medido contra a linha de base de 194,60 kB JS (61,67 kB gzip).
+
+Descartado: parser próprio — menor bundle potencial, mas aumenta a superfície de bugs e
+segurança para reproduzir um formato já padronizado.
