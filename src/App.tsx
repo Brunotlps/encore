@@ -118,27 +118,13 @@ function AboutPage() {
   const { encore } = messages.about;
 
   return (
-    <section className="about" aria-labelledby="about-title">
-      <div className="about-hero">
-        <p className="eyebrow">{messages.about.role}</p>
-        <h1 id="about-title">{messages.about.title}</h1>
-        <p className="about-lead">{messages.about.bio}</p>
-        <div className="profile-actions">
-          <a
-            href="https://github.com/Brunotlps"
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
-          <SocialLinks />
-        </div>
-      </div>
-
+    <section className="about" aria-labelledby="encore-title">
       <article className="about-encore" aria-labelledby="encore-title">
         <header className="encore-intro">
           <p className="eyebrow">{encore.eyebrow}</p>
-          <h2 id="encore-title">{encore.title}</h2>
+          <h1 id="encore-title" className="encore-title">
+            {encore.title}
+          </h1>
           <p>{encore.intro}</p>
           <p className="encore-highlight">{encore.highlight}</p>
         </header>
@@ -179,6 +165,24 @@ function AboutPage() {
           </Link>
         </footer>
       </article>
+
+      <div className="about-hero">
+        <p className="eyebrow">{messages.about.role}</p>
+        <h2 id="about-title" className="about-profile-title">
+          {messages.about.title}
+        </h2>
+        <p className="about-lead">{messages.about.bio}</p>
+        <div className="profile-actions">
+          <a
+            href="https://github.com/Brunotlps"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+          <SocialLinks />
+        </div>
+      </div>
     </section>
   );
 }

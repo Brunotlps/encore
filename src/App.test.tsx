@@ -48,6 +48,13 @@ describe("App", () => {
     const encore = screen.getByRole("article", {
       name: "Um portfólio que responde.",
     });
+    const profileTitle = screen.getByRole("heading", {
+      name: /backend, APIs e agentes de IA/i,
+    });
+    expect(
+      encore.compareDocumentPosition(profileTitle) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     expect(
       within(encore).getByRole("link", {
         name: /conversar sobre os projetos/i,
