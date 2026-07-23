@@ -26,8 +26,10 @@ export default function App() {
 
   return (
     <main className="app">
-      <header>
-        <h1>encore</h1>
+      <header className="app-header">
+        <h1 className="wordmark">
+          enc<span className="wordmark-accent">o</span>re
+        </h1>
         <p>Converse com um agente sobre o código dos meus projetos.</p>
       </header>
 
