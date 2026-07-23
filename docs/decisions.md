@@ -127,3 +127,18 @@ O custo no bundle será medido contra a linha de base de 194,60 kB JS (61,67 kB 
 
 Descartado: parser próprio — menor bundle potencial, mas aumenta a superfície de bugs e
 segurança para reproduzir um formato já padronizado.
+
+### Internacionalização: contexto React e dicionários tipados
+
+Contexto: a interface e cada resposta do agente precisam alternar entre `pt-BR` e `en`
+por requisição, preservando conversa, `thread_id` e projeto selecionado.
+
+Decisão: usar um contexto React leve para a preferência de idioma e dicionários
+TypeScript separados por locale, validados por uma interface comum. A preferência fica
+em `localStorage`; o contexto também atualiza o atributo `lang` e a descrição da
+página. O chat lê o idioma no envio, sem ser remontado ao alternar o controle.
+
+Descartado: adicionar `react-i18next` — a aplicação tem dois idiomas, poucas rotas e
+nenhuma necessidade atual de carregamento remoto, namespaces ou pluralização
+avançada; a dependência aumentaria o bundle e a configuração sem benefício
+proporcional.

@@ -1,4 +1,5 @@
 import type { TrajectoryStep } from "../api";
+import { useI18n } from "../i18n/I18nProvider";
 
 const TOOL_ICONS: Record<string, string> = {
   grep_repo: "🔍",
@@ -17,10 +18,11 @@ export function Trajectory({
   steps: TrajectoryStep[];
   iterations: number;
 }) {
+  const { messages } = useI18n();
   if (steps.length === 0) return null;
 
   const chain = steps.map((step) => `${icon(step.tool)} ${step.tool}`).join(" → ");
-  const label = `${chain} · ${iterations} ${iterations === 1 ? "iteração" : "iterações"}`;
+  const label = `${chain} · ${messages.trajectory.iterations(iterations)}`;
 
   return (
     <details className="trajectory">

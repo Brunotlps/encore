@@ -2,39 +2,52 @@ import { useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "wouter";
 import { fetchRepos, type Repo } from "./api";
 import { Chat } from "./components/Chat";
+import { LanguageToggle } from "./components/LanguageToggle";
 import { ProjectDescription } from "./components/ProjectDescription";
 import { RepoSelector } from "./components/RepoSelector";
+import { I18nProvider, useI18n } from "./i18n/I18nProvider";
 
 function Wordmark() {
+  const { messages } = useI18n();
+
   return (
-    <Link href="/" className="wordmark" aria-label="Encore — página inicial">
+    <Link href="/" className="wordmark" aria-label={messages.header.homeAria}>
       enc<span className="wordmark-accent">o</span>re
     </Link>
   );
 }
 
 function SiteHeader() {
+  const { messages } = useI18n();
   const [location] = useLocation();
   const isProjects = location === "/chat";
 
   return (
     <header className="site-header">
       <Wordmark />
-      <nav aria-label="Navegação principal">
-        <Link href="/" aria-current={!isProjects ? "page" : undefined}>
-          Sobre
-        </Link>
-        <Link href="/chat" aria-current={isProjects ? "page" : undefined}>
-          Projetos
-        </Link>
-      </nav>
+      <div className="header-actions">
+        <nav aria-label={messages.header.navigationAria}>
+          <Link href="/" aria-current={!isProjects ? "page" : undefined}>
+            {messages.header.about}
+          </Link>
+          <Link href="/chat" aria-current={isProjects ? "page" : undefined}>
+            {messages.header.projects}
+          </Link>
+        </nav>
+        <LanguageToggle />
+      </div>
     </header>
   );
 }
 
 function SocialLinks() {
+  const { messages } = useI18n();
+
   return (
-    <nav className="profile-links" aria-label="Links profissionais">
+    <nav
+      className="profile-links"
+      aria-label={messages.about.professionalLinksAria}
+    >
       <a
         href="https://www.linkedin.com/in/brunotlps/"
         target="_blank"
@@ -62,19 +75,15 @@ function SocialLinks() {
 }
 
 function AboutPage() {
+  const { messages } = useI18n();
+  const { encore } = messages.about;
+
   return (
     <section className="about" aria-labelledby="about-title">
       <div className="about-hero">
-        <p className="eyebrow">Bruno Teixeira · Backend Developer</p>
-        <h1 id="about-title">
-          Backend, APIs e agentes de IA construídos para funcionar em produção.
-        </h1>
-        <p className="about-lead">
-          Sou desenvolvedor backend com foco em Python (Django/FastAPI) e Go.
-          Desenvolvo e opero APIs e sistemas com LLMs, da arquitetura ao deploy, com
-          foco em testes automatizados, segurança e observabilidade. Também contribuo
-          para projetos open source, incluindo o Caddy.
-        </p>
+        <p className="eyebrow">{messages.about.role}</p>
+        <h1 id="about-title">{messages.about.title}</h1>
+        <p className="about-lead">{messages.about.bio}</p>
         <div className="profile-actions">
           <a
             href="https://github.com/Brunotlps"
@@ -89,62 +98,45 @@ function AboutPage() {
 
       <article className="about-encore" aria-labelledby="encore-title">
         <header className="encore-intro">
-          <p className="eyebrow">Como funciona</p>
-          <h2 id="encore-title">Um portfólio que responde.</h2>
-          <p>
-            O Encore é um portfólio interativo que transforma meus repositórios em
-            uma experiência de exploração. Em vez de apenas listar projetos, ele
-            permite investigar decisões de arquitetura, implementação, testes e
-            segurança conversando diretamente sobre o código.
-          </p>
-
-          <p className="encore-highlight">
-            Não é um chat genérico: cada resposta parte do projeto selecionado e vem
-            acompanhada das ferramentas que o agente usou para encontrá-la.
-          </p>
+          <p className="eyebrow">{encore.eyebrow}</p>
+          <h2 id="encore-title">{encore.title}</h2>
+          <p>{encore.intro}</p>
+          <p className="encore-highlight">{encore.highlight}</p>
         </header>
 
-        <ol className="encore-steps" aria-label="Como o Encore funciona">
-          <li>
-            <span aria-hidden="true">01</span>
-            <h3>Escolha um projeto</h3>
-            <p>Conheça a stack, o propósito e sugestões do que explorar.</p>
-          </li>
-          <li>
-            <span aria-hidden="true">02</span>
-            <h3>Pergunte ao código</h3>
-            <p>O agente busca arquivos e trechos relevantes no repositório.</p>
-          </li>
-          <li>
-            <span aria-hidden="true">03</span>
-            <h3>Acompanhe o percurso</h3>
-            <p>Veja as ferramentas consultadas junto da resposta.</p>
-          </li>
+        <ol className="encore-steps" aria-label={encore.stepsAria}>
+          {encore.steps.map((step, index) => (
+            <li key={step.title}>
+              <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </li>
+          ))}
         </ol>
 
-        <div className="encore-architecture" aria-label="Arquitetura do Encore">
+        <div className="encore-architecture" aria-label={encore.architectureAria}>
           <div>
-            <span>Interface</span>
+            <span>{encore.interfaceLabel}</span>
             <strong>Encore</strong>
-            <p>React, TypeScript, Vite e Cloudflare Pages.</p>
+            <p>{encore.interfaceDescription}</p>
           </div>
           <span className="architecture-connector" aria-hidden="true">
             →
           </span>
           <div>
-            <span>Agente</span>
+            <span>{encore.agentLabel}</span>
             <strong>Overture</strong>
-            <p>Python, FastAPI, LangGraph e ferramentas de leitura do código.</p>
+            <p>{encore.agentDescription}</p>
           </div>
         </div>
 
         <footer className="encore-action">
           <div>
-            <p className="eyebrow">Experimente agora</p>
-            <p>Escolha um projeto e faça sua primeira pergunta.</p>
+            <p className="eyebrow">{encore.tryEyebrow}</p>
+            <p>{encore.tryDescription}</p>
           </div>
           <Link href="/chat" className="primary-link">
-            Conversar sobre os projetos
+            {encore.cta}
           </Link>
         </footer>
       </article>
@@ -153,6 +145,7 @@ function AboutPage() {
 }
 
 function ProjectsPage() {
+  const { messages } = useI18n();
   const [repos, setRepos] = useState<Repo[] | null>(null); // null = carregando
   const [selected, setSelected] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
@@ -178,25 +171,23 @@ function ProjectsPage() {
   return (
     <section className="projects" aria-labelledby="projects-title">
       <header className="app-header">
-        <p className="eyebrow">Explore o código</p>
-        <h1 id="projects-title">Converse com os projetos.</h1>
-        <p>Faça uma pergunta e acompanhe a investigação do agente.</p>
+        <p className="eyebrow">{messages.projects.eyebrow}</p>
+        <h1 id="projects-title">{messages.projects.title}</h1>
+        <p>{messages.projects.subtitle}</p>
       </header>
 
       {repos === null && !failed && (
         <p role="status" className="repos-loading">
-          Carregando projetos…
+          {messages.projects.loading}
         </p>
       )}
 
       {failed && (
-        <p role="alert">Não consegui carregar a lista de projetos — recarregue a página.</p>
+        <p role="alert">{messages.projects.loadError}</p>
       )}
 
       {repos?.length === 0 && (
-        <p className="app-empty">
-          Nenhum projeto disponível no momento — volte em breve.
-        </p>
+        <p className="app-empty">{messages.projects.empty}</p>
       )}
 
       {repos && selected && selectedRepo && (
@@ -210,7 +201,7 @@ function ProjectsPage() {
   );
 }
 
-export default function App() {
+function AppContent() {
   return (
     <div className="app-shell">
       <SiteHeader />
@@ -222,5 +213,13 @@ export default function App() {
         </Switch>
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   );
 }

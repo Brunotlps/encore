@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError, ask, type AskResponse } from "../api";
+import { I18nProvider } from "../i18n/I18nProvider";
 import { Chat } from "./Chat";
 
 vi.mock("../api", async (importOriginal) => ({
@@ -31,6 +32,7 @@ async function sendQuestion(text: string) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  localStorage.clear();
   sessionStorage.clear();
 });
 
@@ -123,11 +125,13 @@ describe("Chat", () => {
       question: "Primeira?",
       repoId: "overture",
       threadId: undefined,
+      language: "pt-BR",
     });
     expect(askMock).toHaveBeenNthCalledWith(2, {
       question: "Segunda?",
       repoId: "overture",
       threadId: "t-42",
+      language: "pt-BR",
     });
   });
 
@@ -137,10 +141,43 @@ describe("Chat", () => {
     render(<Chat repoId="overture" />);
 
     await sendQuestion("Primeira?");
-    expect(await screen.findByRole("alert")).toHaveTextContent("volte amanhã");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /limite de perguntas/i,
+    );
 
     await sendQuestion("Segunda?");
     expect(await screen.findByText("O rate limit usa KV.")).toBeVisible();
+  });
+
+  it.each([
+    [404, /projeto não está disponível/i],
+    [422, /revise a pergunta/i],
+    [500, /não foi possível obter uma resposta/i],
+  ])("localiza o erro HTTP %s sem exibir o detail da API", async (status, copy) => {
+    askMock.mockRejectedValueOnce(new ApiError(status, "English API detail"));
+    render(<Chat repoId="overture" />);
+
+    await sendQuestion("Pergunta válida?");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(copy);
+    expect(screen.getByRole("alert")).not.toHaveTextContent("English API detail");
+  });
+
+  it("localiza erros no idioma inglês selecionado", async () => {
+    localStorage.setItem("encore:language", "en");
+    askMock.mockRejectedValueOnce(new ApiError(404, "Unknown repo_id"));
+    render(
+      <I18nProvider>
+        <Chat repoId="overture" />
+      </I18nProvider>,
+    );
+
+    await userEvent.type(screen.getByRole("textbox"), "A valid question?");
+    await userEvent.click(screen.getByRole("button", { name: "Send" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "This project is not available right now.",
+    );
   });
 
   it("não envia pergunta com menos de 3 caracteres", async () => {
@@ -171,6 +208,7 @@ describe("Chat", () => {
       question: "Como funciona o agente?",
       repoId: "overture",
       threadId: undefined,
+      language: "pt-BR",
     });
     expect(screen.getByRole("textbox")).toHaveValue("");
   });

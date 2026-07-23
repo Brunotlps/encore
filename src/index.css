@@ -126,6 +126,49 @@ textarea {
   gap: 1.25rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.language-toggle {
+  display: inline-flex;
+  padding: 0.15rem;
+  border: 1px solid var(--border-bright);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.language-toggle button {
+  min-width: 2rem;
+  padding: 0.2rem 0.42rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  transition:
+    color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.language-toggle button:hover {
+  color: var(--mint);
+}
+
+.language-toggle button[aria-pressed="true"] {
+  background: linear-gradient(135deg, rgba(46, 189, 98, 0.2), rgba(131, 220, 161, 0.11));
+  color: var(--green-bright);
+  box-shadow: inset 0 0 0 1px rgba(119, 217, 154, 0.17);
+}
+
 .site-header nav a,
 .profile-links a,
 .profile-actions > a {
@@ -905,8 +948,17 @@ textarea {
   }
 
   .site-header nav {
-    gap: 0.85rem;
-    font-size: 0.9rem;
+    gap: 0.7rem;
+    font-size: 0.84rem;
+  }
+
+  .header-actions {
+    gap: 0.65rem;
+  }
+
+  .language-toggle button {
+    min-width: 1.75rem;
+    padding-inline: 0.32rem;
   }
 
   .wordmark {
@@ -1002,6 +1054,15 @@ textarea {
 }
 
 @media (max-width: 23rem) {
+  .site-header nav {
+    gap: 0.5rem;
+    font-size: 0.78rem;
+  }
+
+  .header-actions {
+    gap: 0.45rem;
+  }
+
   .primary-link {
     width: 100%;
     text-align: center;

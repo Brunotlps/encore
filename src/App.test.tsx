@@ -2,7 +2,7 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ApiError, fetchRepos } from "./api";
+import { ApiError, ask, fetchRepos } from "./api";
 import App from "./App";
 
 vi.mock("./api", async (importOriginal) => ({
@@ -12,6 +12,7 @@ vi.mock("./api", async (importOriginal) => ({
 }));
 
 const fetchReposMock = vi.mocked(fetchRepos);
+const askMock = vi.mocked(ask);
 
 const repos = [
   { repo_id: "overture", display_name: "Overture" },
@@ -21,6 +22,8 @@ const repos = [
 beforeEach(() => {
   vi.clearAllMocks();
   fetchReposMock.mockReset();
+  askMock.mockReset();
+  localStorage.clear();
   sessionStorage.clear();
   window.history.replaceState({}, "", "/chat");
 });
@@ -82,6 +85,67 @@ describe("App", () => {
     await userEvent.click(screen.getByRole("link", { name: /sobre/i }));
     expect(screen.getByText(/sou desenvolvedor backend/i)).toBeVisible();
     expect(window.location.pathname).toBe("/");
+  });
+
+  it("localiza toda a navegação e persiste o idioma escolhido", async () => {
+    window.history.replaceState({}, "", "/");
+    const first = render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "English" }));
+    expect(
+      screen.getByRole("heading", {
+        name: "Backend, APIs, and AI agents built for production.",
+      }),
+    ).toBeVisible();
+    expect(screen.getByRole("link", { name: "About" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Projects" })).toBeVisible();
+    expect(localStorage.getItem("encore:language")).toBe("en");
+
+    first.unmount();
+    render(<App />);
+    expect(screen.getByRole("button", { name: "English" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  it("troca o idioma sem perder projeto, conversa ou thread", async () => {
+    fetchReposMock.mockResolvedValueOnce(repos);
+    askMock.mockResolvedValue({
+      answer: "Resposta",
+      trajectory: [],
+      iterations: 1,
+      thread_id: "t-42",
+    });
+    render(<App />);
+
+    await userEvent.click(await screen.findByRole("button", { name: "Encore" }));
+    await userEvent.type(screen.getByRole("textbox"), "Primeira pergunta?");
+    await userEvent.keyboard("{Enter}");
+    await screen.findByText("Resposta");
+
+    await userEvent.click(screen.getByRole("button", { name: "English" }));
+    expect(screen.getByRole("button", { name: "Encore" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByText("Primeira pergunta?")).toBeVisible();
+
+    await userEvent.type(screen.getByRole("textbox"), "Second question?");
+    await userEvent.keyboard("{Enter}");
+
+    expect(askMock).toHaveBeenNthCalledWith(1, {
+      question: "Primeira pergunta?",
+      repoId: "encore",
+      threadId: undefined,
+      language: "pt-BR",
+    });
+    expect(askMock).toHaveBeenNthCalledWith(2, {
+      question: "Second question?",
+      repoId: "encore",
+      threadId: "t-42",
+      language: "en",
+    });
   });
 
   it("lista os projetos e pré-seleciona o primeiro", async () => {

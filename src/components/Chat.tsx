@@ -7,6 +7,7 @@ import {
 } from "react";
 import { ApiError, ask, type TrajectoryStep } from "../api";
 import { useThread } from "../hooks/useThread";
+import { useI18n } from "../i18n/I18nProvider";
 import { Trajectory } from "./Trajectory";
 
 const AgentMarkdown = lazy(() => import("./AgentMarkdown"));
@@ -16,6 +17,7 @@ type Message =
   | { role: "agent"; text: string; trajectory: TrajectoryStep[]; iterations: number };
 
 export function Chat({ repoId }: { repoId: string }) {
+  const { language, messages: ui } = useI18n();
   const { threadId, saveThread } = useThread(repoId);
   // Histórico por repo: trocar de projeto não apaga a conversa do anterior.
   const [messagesByRepo, setMessagesByRepo] = useState<Record<string, Message[]>>({});
@@ -33,6 +35,21 @@ export function Chat({ repoId }: { repoId: string }) {
     }));
   }
 
+  function localizedError(error: unknown) {
+    if (!(error instanceof ApiError)) return ui.errors.generic;
+
+    switch (error.status) {
+      case 404:
+        return ui.errors.unknownRepo;
+      case 422:
+        return ui.errors.validation;
+      case 429:
+        return ui.errors.rateLimit;
+      default:
+        return ui.errors.generic;
+    }
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!canSend) return;
@@ -43,7 +60,7 @@ export function Chat({ repoId }: { repoId: string }) {
     append(repoId, { role: "user", text });
     setLoading(true);
     try {
-      const res = await ask({ question: text, repoId, threadId });
+      const res = await ask({ question: text, repoId, threadId, language });
       saveThread(res.thread_id);
       append(repoId, {
         role: "agent",
@@ -52,9 +69,7 @@ export function Chat({ repoId }: { repoId: string }) {
         iterations: res.iterations,
       });
     } catch (err) {
-      setError(
-        err instanceof ApiError ? err.detail : "Erro inesperado — tente de novo.",
-      );
+      setError(localizedError(err));
     } finally {
       setLoading(false);
     }
@@ -76,7 +91,7 @@ export function Chat({ repoId }: { repoId: string }) {
   return (
     <section
       className="chat"
-      aria-label={`Conversa sobre ${repoId}`}
+      aria-label={ui.chat.regionAria(repoId)}
       aria-busy={loading}
     >
       <ol className="chat-messages" aria-live="polite">
@@ -87,7 +102,7 @@ export function Chat({ repoId }: { repoId: string }) {
             ) : (
               <>
                 <Suspense
-                  fallback={<p className="agent-answer-loading">Formatando resposta…</p>}
+                  fallback={<p className="agent-answer-loading">{ui.chat.formatting}</p>}
                 >
                   <AgentMarkdown>{message.text}</AgentMarkdown>
                 </Suspense>
@@ -103,7 +118,7 @@ export function Chat({ repoId }: { repoId: string }) {
 
       {loading && (
         <p role="status" className="chat-loading">
-          O agente está investigando o código…
+          {ui.chat.loading}
         </p>
       )}
       {error && (
@@ -114,18 +129,18 @@ export function Chat({ repoId }: { repoId: string }) {
 
       <form onSubmit={handleSubmit} className="chat-form">
         <textarea
-          aria-label="Pergunta sobre o projeto"
+          aria-label={ui.chat.questionAria}
           aria-keyshortcuts="Enter"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           onKeyDown={handleQuestionKeyDown}
-          placeholder="Pergunte algo sobre o código deste projeto…"
-          title="Enter envia · Shift+Enter insere uma nova linha"
+          placeholder={ui.chat.placeholder}
+          title={ui.chat.shortcutTitle}
           maxLength={500}
           rows={2}
         />
         <button type="submit" disabled={!canSend}>
-          Enviar
+          {ui.chat.send}
         </button>
       </form>
     </section>

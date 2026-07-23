@@ -20,19 +20,24 @@ Lista os projetos disponíveis para o seletor.
 
 ```json
 [{"repo_id": "overture", "display_name": "Overture"}]
+```
 
-POST /ask
+## `POST /ask`
 
 Request:
 
+```json
 {
   "question": "string, 3 a 500 caracteres, obrigatório",
   "thread_id": "string opcional, max 100 chars — omita na primeira pergunta; reenvie o valor recebido na resposta anterior para continuar a mesma conversa",
-  "repo_id": "string opcional — um repo_id de GET /repos; este frontend sempre envia o repo_id escolhido pelo visitante"
+  "repo_id": "string opcional — um repo_id de GET /repos; este frontend sempre envia o repo_id escolhido pelo visitante",
+  "language": "'pt-BR' ou 'en', opcional, padrão 'pt-BR'; este frontend sempre envia o idioma escolhido pelo visitante"
 }
+```
 
 Response (200):
 
+```json
 {
   "answer": "string — resposta final do agente",
   "trajectory": [
@@ -42,14 +47,19 @@ Response (200):
   "iterations": 3,
   "thread_id": "string — guardar para as próximas perguntas da mesma conversa"
 }
+```
 
 - trajectory é o principal diferencial de portfólio deste frontend: exibir de forma
 visível (ex. lista colapsável "🔍 grep_repo → 📄 read_file → 💬 resposta"), não só a
 answer.
-- Body com campo extra além de question/thread_id/repo_id → 422 (schema é
+- `language` é por requisição: pode mudar dentro da mesma conversa sem trocar o
+  `thread_id`; outro valor além de `pt-BR` ou `en` → 422.
+- Body com campo extra além de question/thread_id/repo_id/language → 422 (schema é
 extra="forbid").
 - repo_id desconhecido → 404 {"detail": "Unknown repo_id: <valor>"}.
 - Erro inesperado no agente → 500 {"detail": "Unexpected error running the agent"}.
+- O `detail` dos erros permanece em inglês. A UI localiza por status: 404 para
+  projeto desconhecido, 422 para validação e 500 para falha genérica.
 - Sem streaming — a resposta só chega completa no fim, pode levar alguns segundos; a UI
 precisa de um estado de carregamento claro durante a espera.
 
@@ -64,4 +74,3 @@ Fly escala a zero) — sempre comece com thread_id omitido na primeira pergunta 
 sessão nova.
 3. Estouro de orçamento de tool calls do agente ainda retorna answer preenchida — não é
 um erro HTTP, é resposta normal; não tratar como caso de exceção na UI.
-```

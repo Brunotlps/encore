@@ -1,4 +1,5 @@
 import type { Repo } from "../api";
+import { useI18n } from "../i18n/I18nProvider";
 
 export function RepoSelector({
   repos,
@@ -9,8 +10,10 @@ export function RepoSelector({
   selected: string;
   onSelect: (repoId: string) => void;
 }) {
+  const { messages } = useI18n();
+
   return (
-    <nav className="repo-selector" aria-label="Projetos">
+    <nav className="repo-selector" aria-label={messages.projects.selectorAria}>
       {repos.map((repo) => (
         <button
           key={repo.repo_id}

@@ -1,4 +1,5 @@
 // Cliente do proxy /api/* — tipos espelham docs/api-contract.md.
+import type { Language } from "./i18n/types";
 
 export interface Repo {
   repo_id: string;
@@ -51,6 +52,7 @@ export async function ask(params: {
   question: string;
   repoId: string;
   threadId?: string;
+  language: Language;
 }): Promise<AskResponse> {
   // Upstream é extra="forbid": thread_id undefined precisa sumir do JSON,
   // não virar null — JSON.stringify já omite chaves undefined.
@@ -61,6 +63,7 @@ export async function ask(params: {
       question: params.question,
       repo_id: params.repoId,
       thread_id: params.threadId,
+      language: params.language,
     }),
   });
   if (!response.ok) throw await toApiError(response);

@@ -30,31 +30,49 @@ describe("fetchRepos", () => {
 });
 
 describe("ask", () => {
-  it("posta question e repo_id, omitindo thread_id na primeira pergunta", async () => {
-    await ask({ question: "Como funciona?", repoId: "overture" });
+  it("posta question, repo_id e language, omitindo thread_id na primeira pergunta", async () => {
+    await ask({
+      question: "Como funciona?",
+      repoId: "overture",
+      language: "pt-BR",
+    });
 
     const [url, init] = vi.mocked(fetch).mock.calls[0]!;
     expect(url).toBe("/api/ask");
     expect(init?.method).toBe("POST");
     const body = JSON.parse(init?.body as string);
-    expect(body).toEqual({ question: "Como funciona?", repo_id: "overture" });
+    expect(body).toEqual({
+      question: "Como funciona?",
+      repo_id: "overture",
+      language: "pt-BR",
+    });
     expect("thread_id" in body).toBe(false);
   });
 
-  it("inclui thread_id nas perguntas seguintes", async () => {
-    await ask({ question: "E depois?", repoId: "overture", threadId: "t-1" });
+  it("inclui thread_id e permite trocar o idioma nas perguntas seguintes", async () => {
+    await ask({
+      question: "What next?",
+      repoId: "overture",
+      threadId: "t-1",
+      language: "en",
+    });
 
     const [, init] = vi.mocked(fetch).mock.calls[0]!;
     expect(JSON.parse(init?.body as string)).toEqual({
-      question: "E depois?",
+      question: "What next?",
       repo_id: "overture",
       thread_id: "t-1",
+      language: "en",
     });
   });
 
   it("devolve a resposta tipada do agente", async () => {
     await expect(
-      ask({ question: "Como funciona?", repoId: "overture" }),
+      ask({
+        question: "Como funciona?",
+        repoId: "overture",
+        language: "pt-BR",
+      }),
     ).resolves.toEqual(askResponse);
   });
 
@@ -63,9 +81,11 @@ describe("ask", () => {
       Response.json({ detail: "volte amanhã" }, { status: 429 }),
     );
 
-    const error = await ask({ question: "Oi?", repoId: "overture" }).catch(
-      (e: unknown) => e,
-    );
+    const error = await ask({
+      question: "Oi?",
+      repoId: "overture",
+      language: "pt-BR",
+    }).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).status).toBe(429);
     expect((error as ApiError).detail).toBe("volte amanhã");
@@ -79,9 +99,11 @@ describe("ask", () => {
       ),
     );
 
-    const error = await ask({ question: "Oi?", repoId: "overture" }).catch(
-      (e: unknown) => e,
-    );
+    const error = await ask({
+      question: "Oi?",
+      repoId: "overture",
+      language: "pt-BR",
+    }).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).detail).toMatch(/inesperado/i);
   });
@@ -91,9 +113,11 @@ describe("ask", () => {
       new Response("<html>gateway error</html>", { status: 502 }),
     );
 
-    const error = await ask({ question: "Oi?", repoId: "overture" }).catch(
-      (e: unknown) => e,
-    );
+    const error = await ask({
+      question: "Oi?",
+      repoId: "overture",
+      language: "pt-BR",
+    }).catch((e: unknown) => e);
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).status).toBe(502);
     expect((error as ApiError).detail).toMatch(/inesperado/i);
